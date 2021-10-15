@@ -2,6 +2,10 @@
 
 An algorithm for clustering metagenomic sequences.
 
+All datasets mentioned in text and some NEWLY ADDED datasets are available in **[Google Drive](https://drive.google.com/drive/folders/1_mybcewf3VE-7dte6oA-vDmlRx2ugzyD?usp=sharing)**.
+
+Benchmarks for all datasets are available in **benchmarks** directory.
+
 ## Dependencies
 
 * [python (version 3.8.6 or >= 3.8)](https://www.python.org/)
@@ -175,10 +179,6 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 ```
 
 ### A simple example to use MetaDecoder is available in MetaDecoder/example/
-
-## Note
-
-All datasets mentioned in text and some NEWLY ADDED datasets are available in **[Google Drive](https://drive.google.com/drive/folders/1_mybcewf3VE-7dte6oA-vDmlRx2ugzyD?usp=sharing)**.
 
 ## References
 
