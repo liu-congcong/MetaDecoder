@@ -169,6 +169,57 @@ All datasets mentioned in text and some NEWLY ADDED datasets are available in **
 |VAMB|≤0.05|171|280|385|500|617|
 |VAMB|≤0.10|195|324|447|572|707|
 
+* 24 HMP datasets
+
+|Program|Contamination|Completeness≥0.9|Completeness≥0.8|Completeness≥0.7|Completeness≥0.6|Completeness≥0.5|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|MetaDecoder|≤0.05|406|532|634|701|778|
+|MetaDecoder|≤0.10|416|546|661|733|825|
+|MetaDecoder1000|≤0.05|419|549|625|696|750|
+|MetaDecoder1000|≤0.10|444|589|675|756|825|
+|CONCOCT|≤0.05|297|346|378|399|415|
+|CONCOCT|≤0.10|322|390|428|454|477|
+|MaxBin2|≤0.05|207|235|259|281|308|
+|MaxBin2|≤0.10|252|309|352|389|434|
+|MetaBAT2|≤0.05|270|371|475|556|639|
+|MetaBAT2|≤0.10|277|388|496|582|671|
+|VAMB|≤0.05|220|310|359|404|456|
+|VAMB|≤0.10|224|319|370|415|470|
+
+* crystal geyser datasets
+
+|Program|Contamination|Completeness≥0.9|Completeness≥0.8|Completeness≥0.7|Completeness≥0.6|Completeness≥0.5|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|MetaDecoder|≤0.05|66|104|138|202|245|
+|MetaDecoder|≤0.10|67|108|143|211|261|
+|MetaDecoder1000|≤0.05|72|103|133|181|215|
+|MetaDecoder1000|≤0.10|79|115|156|213|256|
+|CONCOCT|≤0.05|36|44|56|65|72|
+|CONCOCT|≤0.10|42|55|69|80|89|
+|MaxBin2|≤0.05|34|47|63|72|92|
+|MaxBin2|≤0.10|44|66|83|103|133|
+|MetaBAT2|≤0.05|55|82|122|166|212|
+|MetaBAT2|≤0.10|58|88|130|177|225|
+|VAMB|≤0.05|39|49|75|101|128|
+|VAMB|≤0.10|40|53|80|106|133|
+
+* T2D datasets
+
+|Program|Contamination|Completeness≥0.9|Completeness≥0.8|Completeness≥0.7|Completeness≥0.6|Completeness≥0.5|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|MetaDecoder|≤0.05|2,014|2,540|2,943|3,243|3,496|
+|MetaDecoder|≤0.10|2,040|2,588|3,020|3,363|3,651|
+|MetaDecoder1000|≤0.05|1,947|2,534|2,987|3,264|3,530|
+|MetaDecoder1000|≤0.10|2,019|2,655|3,151|3,459|3,765|
+|CONCOCT|≤0.05|1,485|1,748|1,913|2,046|2,178|
+|CONCOCT|≤0.10|1,576|1,900|2,093|2,254|2,414|
+|MaxBin2|≤0.05|437|547|632|695|789|
+|MaxBin2|≤0.10|692|888|1,041|1,166|1,332|
+|MetaBAT2|≤0.05|1,302|1,790|2,208|2,503|2,825|
+|MetaBAT2|≤0.10|1,357|1,887|2,352|2,682|3,036|
+|VAMB|≤0.05|1,161|1,548|1,785|1,933|2,109|
+|VAMB|≤0.10|1,187|1,588|1,838|1,995|2,182|
+
 ## Data processing
 
 ### Construct assemblies
