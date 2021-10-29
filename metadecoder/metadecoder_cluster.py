@@ -156,21 +156,14 @@ def read_mapping_file(input_file):
     return None
 
 
-def calculate_pairwise_distance(total_distance, x, x_start, x_end, lock):
-    total_distance_ = 0.0
-    for index in range(x_start, x_end):
-        total_distance_ += numpy.sum(
-            numpy.sqrt(
-                numpy.sum(
-                    numpy.square(x[index : ] - x[index]),
-                    axis = 1
-                )
-            )
-        )
-    lock.acquire()
-    total_distance.value += total_distance_
-    lock.release()
-    return None
+def calculate_average_distance(x):
+    xx = numpy.sum(numpy.square(x), axis = 1, keepdims = True) # (samples, 1) #
+    distance_matrix = x @ x.T
+    distance_matrix *= -2.0
+    distance_matrix += xx
+    distance_matrix += xx.T
+    distance_matrix[distance_matrix < 0.0] = 0.0
+    return numpy.sum(numpy.sqrt(distance_matrix)) / (x.shape[0] * (x.shape[0] - 1) + numpy.finfo(numpy.float64).eps)
 
 
 def run_models(process_queue, container, offset, kmer, kmer2index, kmers, sampling_length1, sampling_number1, sampling_length2, sampling_number2, weight, min_clustering_probability, outlier, random_number):
@@ -320,34 +313,14 @@ def main(parameters):
         dpgmm_predictions = load_dpgmm_prediction(os.path.basename(parameters.fasta) + '.' + str(parameters.min_sequence_length) + '.metadecoder.dpgmm')
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Done.', flush = True)
 
-    total_distance = sharedctypes.RawValue(c_double, 0.0)
     for dpgmm_prediction in numpy.unique(dpgmm_predictions):
         sequences_ = numpy.flatnonzero(dpgmm_predictions == dpgmm_prediction)
-        step = max(ceil(sequences_.shape[0] / os.cpu_count()), 1000)
-        for start in range(0, sequences_.shape[0], step):
-            processes.append(
-                Process(
-                    target = calculate_pairwise_distance,
-                    args = [
-                        total_distance,
-                        kmer_frequency[sequences_],
-                        start,
-                        min(start + step, sequences_.shape[0]),
-                        lock
-                    ]
-                )
-            )
-            processes[-1].start()
-        for process in processes:
-            process.join()
-        processes.clear()
-        if total_distance.value * 2.0 / (sequences_.shape[0] * (sequences_.shape[0] - 1) + numpy.finfo(numpy.float64).eps) <= parameters.max_dpgmm_distance:
+        if calculate_average_distance(kmer_frequency[sequences_]) <= parameters.max_dpgmm_distance:
             container_value = numpy.min(sequences_)
         else:
             container_value = -total_sequences - 1
         for sequence in sequences_:
             container[sequence] = container_value
-        total_distance.value = 0.0
 
     # Start all processes. #
     process_queue = JoinableQueue(int(os.cpu_count() * 10))

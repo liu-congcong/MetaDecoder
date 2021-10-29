@@ -180,6 +180,14 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 ### A simple example to use MetaDecoder is available in MetaDecoder/example/
 
+## Change logs
+
+* 1.0.3 (20211008): Initial version.
+
+* 1.0.4 (20211029): Optimize the calculation of distance of pairwise kmer frequency.
+
+* To do: Add GPU version KMeans++ in DPGMM.
+
 ## References
 
 * Mina Rho, Haixu Tang, and Yuzhen Ye. FragGeneScan: Predicting Genes in Short and Error-prone Reads. Nucl. Acids Res., 2010 doi: 10.1093/nar/gkq747.
