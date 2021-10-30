@@ -1,18 +1,19 @@
 import os
-from ctypes import c_double, c_longlong
+from ctypes import c_longlong
 from datetime import datetime
 from math import ceil
-from multiprocessing import JoinableQueue, Lock, Process, sharedctypes
+from multiprocessing import JoinableQueue, Process, sharedctypes
 
 import numpy
+from sklearn.decomposition import PCA
+from sklearn.mixture import GaussianMixture
+from threadpoolctl import threadpool_limits
+
 from metadecoder.coverage_model import GMM
 from metadecoder.fasta_utility import read_fasta_file
 from metadecoder.isolation_forest import isolation_forest
 from metadecoder.kmer_frequency_model import generate_kmer_frequency, kmer_to_index, run_svm, sample_kmer_frequency
 from metadecoder.seed_selection import generate_seed, select_seed
-from sklearn.decomposition import PCA
-from sklearn.mixture import GaussianMixture
-from threadpoolctl import threadpool_limits
 
 
 def read_coverage_file(file, sequence_id2sequence, sequences):
@@ -287,8 +288,6 @@ def main(parameters):
     total_sequences = sequences.shape[0]
     # Initialize the container. #
     container = sharedctypes.RawArray(c_longlong, total_sequences)
-    processes = list()
-    lock = Lock()
 
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Running the DPGMM algorithm to obtain clusters.', flush = True)
     pca = PCA(n_components = 0.9, whiten = False, random_state = parameters.random_number)
@@ -323,6 +322,7 @@ def main(parameters):
             container[sequence] = container_value
 
     # Start all processes. #
+    processes = list()
     process_queue = JoinableQueue(int(os.cpu_count() * 10))
     with threadpool_limits(limits = 1):
         for process_index in range(os.cpu_count()):
