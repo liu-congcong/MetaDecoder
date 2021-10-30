@@ -108,7 +108,7 @@ python3 -m cupyx.tools.install_library --cuda XXX --library cutensor
 echo 'export CUPY_ACCELERATORS="cutensor"' >> ~/.bashrc
 ```
 
-### Run MetaDecoder on MacOS
+### Run MetaDecoder on MacOS (only for MacOS 11 now)
 
 We provided the compiled fraggenescan and hmmsearch for MacOS users.
 
