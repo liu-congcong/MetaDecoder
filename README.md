@@ -186,7 +186,7 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 * 1.0.4 (20211029): Optimize the calculation of distance of pairwise kmer frequency.
 
-* To do: Add GPU version KMeans++ in DPGMM.
+* 1.0.5 (20211105): Optimize the counting process of kmers.
 
 ## References
 
