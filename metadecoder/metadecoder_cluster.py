@@ -9,11 +9,11 @@ from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture
 from threadpoolctl import threadpool_limits
 
-from metadecoder.coverage_model import GMM
-from metadecoder.fasta_utility import read_fasta_file
-from metadecoder.isolation_forest import isolation_forest
-from metadecoder.kmer_frequency_model import generate_kmer_frequency, kmer_to_index, run_svm, sample_kmer_frequency
-from metadecoder.seed_selection import generate_seed, select_seed
+from .coverage_model import GMM
+from .fasta_utility import read_fasta_file
+from .isolation_forest import isolation_forest
+from .kmer_frequency_model import generate_kmer_frequency, kmer_to_index, run_svm, sample_kmer_frequency
+from .seed_selection import generate_seed, select_seed
 
 
 def read_coverage_file(file, sequence_id2sequence, sequences):
@@ -225,7 +225,6 @@ def run_models(process_queue, container, offset, kmer, kmer2index, kmers, sampli
                     container_value = -offset - 1
                     for sequence in sequences_:
                         container[sequence] = container_value
-
             process_queue.task_done()
         else: # All tasks have been finished. #
             process_queue.task_done()
@@ -329,7 +328,7 @@ def main(parameters):
             processes.append(
                 Process(
                     target = run_models,
-                    args = [
+                    args = (
                         process_queue,
                         container,
                         total_sequences,
@@ -344,7 +343,7 @@ def main(parameters):
                         parameters.clustering_probability,
                         parameters.outlier,
                         parameters.random_number
-                    ]
+                    )
                 )
             )
             processes[-1].start()
