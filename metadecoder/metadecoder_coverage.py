@@ -5,8 +5,8 @@ from multiprocessing import Pool
 from re import compile
 
 import numpy
-from metadecoder.make_file import make_file
-from metadecoder.sam_utility import generate_block, get_sequence_information, read_sam_file
+from .make_file import make_file
+from .sam_utility import generate_block, get_sequence_information, read_sam_file
 
 
 def get_coverage(input_file, block_start, block_end, output_file, bin_size, mapq, aligned_threshold):
