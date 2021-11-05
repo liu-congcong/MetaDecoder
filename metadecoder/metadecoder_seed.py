@@ -2,9 +2,9 @@ import os
 from datetime import datetime
 from math import inf
 
-from metadecoder.fasta_utility import read_fasta_file
-from metadecoder.make_file import make_file
-from metadecoder.run_subprocess import get_program_information, run_fraggenescan, run_hmmsearch, run_prodigal
+from .fasta_utility import read_fasta_file
+from .make_file import make_file
+from .run_subprocess import get_program_information, run_fraggenescan, run_hmmsearch, run_prodigal
 
 
 def parse_sequence_id(file, trim):
