@@ -89,22 +89,35 @@ def cluster_sequences(sequences, probabilities, min_probability):
     return ([sequences[(cluster_indices == cluster_index) & mask] for cluster_index in numpy.unique(cluster_indices[mask])], sequences[~mask])
 
 
-def output_clusters(sequence_ids, SEQUENCES, cluster_indices, output_unclustered_sequences, file_prefix, length_per_line = 100):
-    for file_index, cluster_index in enumerate(numpy.unique(cluster_indices)):
-        if file_index:
-            open_file = open('{0}.{1}.fasta'.format(file_prefix, file_index), 'w')
-        elif output_unclustered_sequences:
-            open_file = open('{0}.{1}.fasta'.format(file_prefix, 'unclustered'), 'w')
-        else:
-            continue
-        for sequence in numpy.flatnonzero(cluster_indices == cluster_index):
-            open_file.write('>' + sequence_ids[sequence] + '\n')
-            SEQUENCE = SEQUENCES[sequence]
-            index = 0
-            while open_file.write(SEQUENCE[index : index + length_per_line]):
-                open_file.write('\n')
-                index += length_per_line
+def output_clusters(sequence_ids, SEQUENCES, no_clusters, cluster_indices, output_unclustered_sequences, file_prefix, length_per_line = 100):
+
+    if no_clusters:
+        open_file = open('{0}.cluster'.format(file_prefix), 'w')
+        open_file.write('Sequence ID\tCluster ID\n')
+        for cluster_index_, cluster_index in enumerate(numpy.unique(cluster_indices)):
+            if cluster_index_ or ((not cluster_index_) and output_unclustered_sequences):
+                cluster_index_ = str(cluster_index_) if cluster_index_ else 'unclustered'
+                for sequence in numpy.flatnonzero(cluster_indices == cluster_index):
+                    open_file.write('\t'.join([sequence_ids[sequence], cluster_index_]) + '\n')
         open_file.close()
+
+    else:
+        for file_index, cluster_index in enumerate(numpy.unique(cluster_indices)):
+            if file_index:
+                open_file = open('{0}.{1}.fasta'.format(file_prefix, file_index), 'w')
+            elif output_unclustered_sequences:
+                open_file = open('{0}.{1}.fasta'.format(file_prefix, 'unclustered'), 'w')
+            else:
+                continue
+            for sequence in numpy.flatnonzero(cluster_indices == cluster_index):
+                open_file.write('>' + sequence_ids[sequence] + '\n')
+                SEQUENCE = SEQUENCES[sequence]
+                index = 0
+                while open_file.write(SEQUENCE[index : index + length_per_line]):
+                    open_file.write('\n')
+                    index += length_per_line
+            open_file.close()
+
     return None
 
 
@@ -387,5 +400,5 @@ def main(parameters):
     process_queue.join()
     processes.clear()
 
-    output_clusters(sequence_ids, SEQUENCES, numpy.asarray(container, dtype = numpy.int64), parameters.output_unclustered_sequences, parameters.output)
+    output_clusters(sequence_ids, SEQUENCES, parameters.no_clusters, numpy.asarray(container, dtype = numpy.int64), parameters.output_unclustered_sequences, parameters.output)
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Finished.', flush = True)

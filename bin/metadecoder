@@ -158,9 +158,13 @@ def __init__(parameters):
         '--disable_gpu', default = False, required = False, action = 'store_true',
         help = 'Disable the GPU if it does not have enough memory to accommodate the data.\nDefault: False.'
     )
+    cluster_parser.add_argument(
+        '--no_clusters', default = False, required = False, action = 'store_true',
+        help = 'Do not output fasta format cluster files.\nDefault: False.'
+    )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.5'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.6'
     )
     return parser.parse_args(parameters)
 
