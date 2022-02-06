@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 import os
 from stat import S_IRWXU, S_IRGRP, S_IXGRP, S_IROTH, S_IXOTH
 from setuptools import setup, find_packages
@@ -21,7 +21,7 @@ class set_permissions(install):
 def main():
     setup(
         name = 'metadecoder',
-        version = '1.0.6',
+        version = '1.0.7',
         url = 'https://github.com/liu-congcong/metadecoder/',
         author = 'Liucongcong',
         author_email = 'congcong_liu@icloud.com',

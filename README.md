@@ -190,6 +190,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 * 1.0.6 (20211207): Added an option (--no_clusters) to output only sequence IDs and the corresponding cluster IDs instead of sequences.
 
+* 1.0.7 (20220206): Minor bugs fixed.
+
 ## References
 
 * Mina Rho, Haixu Tang, and Yuzhen Ye. FragGeneScan: Predicting Genes in Short and Error-prone Reads. Nucl. Acids Res., 2010 doi: 10.1093/nar/gkq747.

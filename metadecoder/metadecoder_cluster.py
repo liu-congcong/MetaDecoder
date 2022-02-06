@@ -89,27 +89,37 @@ def cluster_sequences(sequences, probabilities, min_probability):
     return ([sequences[(cluster_indices == cluster_index) & mask] for cluster_index in numpy.unique(cluster_indices[mask])], sequences[~mask])
 
 
-def output_clusters(sequence_ids, SEQUENCES, no_clusters, cluster_indices, output_unclustered_sequences, file_prefix, length_per_line = 100):
+def output_clusters(sequence_ids, SEQUENCES, clusters, file_prefix, no_clusters, output_unclustered_sequences, length_per_line = 100):
+
+    unclustered = - clusters.shape[0] - 1
+    cluster_index = 1
 
     if no_clusters:
         open_file = open('{0}.cluster'.format(file_prefix), 'w')
         open_file.write('Sequence ID\tCluster ID\n')
-        for cluster_index_, cluster_index in enumerate(numpy.unique(cluster_indices)):
-            if cluster_index_ or ((not cluster_index_) and output_unclustered_sequences):
-                cluster_index_ = str(cluster_index_) if cluster_index_ else 'unclustered'
-                for sequence in numpy.flatnonzero(cluster_indices == cluster_index):
-                    open_file.write('\t'.join([sequence_ids[sequence], cluster_index_]) + '\n')
+        for cluster in numpy.unique(clusters):
+            if cluster != unclustered:
+                cluster_name = str(cluster_index)
+                cluster_index += 1
+            elif output_unclustered_sequences:
+                cluster_name = 'unclustered'
+            else:
+                continue
+            for sequence in numpy.flatnonzero(clusters == cluster):
+                open_file.write('\t'.join([sequence_ids[sequence], cluster_name]) + '\n')
         open_file.close()
 
     else:
-        for file_index, cluster_index in enumerate(numpy.unique(cluster_indices)):
-            if file_index:
-                open_file = open('{0}.{1}.fasta'.format(file_prefix, file_index), 'w')
+        for cluster in numpy.unique(clusters):
+            if cluster != unclustered:
+                cluster_name = str(cluster_index)
+                cluster_index += 1
             elif output_unclustered_sequences:
-                open_file = open('{0}.{1}.fasta'.format(file_prefix, 'unclustered'), 'w')
+                cluster_name = 'unclustered'
             else:
                 continue
-            for sequence in numpy.flatnonzero(cluster_indices == cluster_index):
+            open_file = open('{0}.{1}.fasta'.format(file_prefix, cluster_name), 'w')
+            for sequence in numpy.flatnonzero(clusters == cluster):
                 open_file.write('>' + sequence_ids[sequence] + '\n')
                 SEQUENCE = SEQUENCES[sequence]
                 index = 0
@@ -248,12 +258,12 @@ def run_models(process_queue, container, offset, kmer, kmer2index, kmers, sampli
 def main(parameters):
     # Import DPGMM class. #
     if parameters.disable_gpu:
-        from metadecoder.dirichlet_process_gaussian_mixture import DPGMM
+        from .dirichlet_process_gaussian_mixture import DPGMM
     else:
         try:
-            from metadecoder.dirichlet_process_gaussian_mixture_gpu import DPGMM
+            from .dirichlet_process_gaussian_mixture_gpu import DPGMM
         except Exception:
-            from metadecoder.dirichlet_process_gaussian_mixture import DPGMM
+            from .dirichlet_process_gaussian_mixture import DPGMM
 
     # read fasta file, return list, list #
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Loading fasta file.', flush = True)
@@ -400,5 +410,12 @@ def main(parameters):
     process_queue.join()
     processes.clear()
 
-    output_clusters(sequence_ids, SEQUENCES, parameters.no_clusters, numpy.asarray(container, dtype = numpy.int64), parameters.output_unclustered_sequences, parameters.output)
+    output_clusters(
+        sequence_ids,
+        SEQUENCES,
+        numpy.asarray(container, dtype = numpy.int64),
+        parameters.output,
+        parameters.no_clusters,
+        parameters.output_unclustered_sequences
+    )
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Finished.', flush = True)

@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 import os
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -13,7 +13,6 @@ from metadecoder import metadecoder_cluster
 
 def __init__(parameters):
     parser = ArgumentParser(
-        prog = sys.argv[0],
         formatter_class = RawTextHelpFormatter,
         description = 'The MetaDecoder algorithm.',
         epilog = 'Liucongcong congcong_liu@icloud.com.'
@@ -164,7 +163,7 @@ def __init__(parameters):
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.6'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.7'
     )
     return parser.parse_args(parameters)
 
