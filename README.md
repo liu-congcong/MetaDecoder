@@ -28,9 +28,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder (MD5: dda13f738dfedcdfc226232b089633c9) #
-wget https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.3/metadecoder.1.0.3.tar.gz
-pip3 install metadecoder*.tar.gz
+# Download and install MetaDecoder version 1.0.7 (md5: 93c00071bb768cbaa3622d207d603c61) #
+pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.7/metadecoder-1.0.7-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -47,40 +46,6 @@ pip3 install numpy==1.18.5 scipy==1.5.4 scikit-learn==0.23.2 threadpoolctl
 MetaDecoder uses **FragGeneScan** or **Prodigal** and **Hmmer** for predicting protein coding genes and mapping single-copy marker genes to contigs, respectively.
 
 MetaDecoder has included the compiled FragGeneScan (version 1.31) and Hmmer (version 3.2.1).
-
-If any errors occurs during the process, you may need to compile the following programs manually:
-
-* **FragGeneScan (version 1.31)** or **Prodigal (version 2.6.3)**
-
-* **Hmmer (version 3.2.1)**
-
-If you encounter any installation problems, please:
-
-* Download and decompress **metadecoder.*.tar.gz**.
-
-* Move **metadecoder** from **bin** folder to **python3.X/bin/**.
-
-```shell
-mv metadecoder-1.0/bin/metadecoder python3.X/bin/
-```
-
-* Move the **metadecoder** folder to **python3.X/lib/python3.X/site-packages/**.
-
-```shell
-mv metadecoder-1.0/metadecoder python3.X/lib/python3.X/site-packages/
-```
-
-* Assign appropriate permissions to the following files such as 755.
-
-```shell
-chmod 755 python3.X/bin/metadecoder
-chmod 755 python3.X/lib/python3.X/site-packages/metadecoder/fraggenescan
-chmod 755 python3.X/lib/python3.X/site-packages/metadecoder/hmmsearch
-```
-
-To verify your installation, please run **python3 -c "import metadecoder"**.
-
-If there is no error, you have successfully installed MetaDecoder.
 
 ### The GPU version of MetaDecoder
 
