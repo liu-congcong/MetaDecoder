@@ -63,7 +63,17 @@ def __init__(parameters):
     )
     parser.add_argument(
         '-i', '--input', type = str, required = True, metavar = 'file|directory',
-        help = 'Compatible with 2 types of inputs:\n1. TSV formatted CheckM\'s output [FILE].\n2. Amber\'s output [DIRECTORY].'
+        help = '''Compatible with 2 types of inputs:
+-------------------------------------------------------------------------------------------
+1 - TSV formatted CheckM\'s output [FILE].
+    The format of the first column must be "Dataset.Program.ClusterID".
+    You can define the name of each cluster file as "Dataset.Program.ClusterID.fasta",
+    and put all files in the "FASTAS" folder, then run:
+    "checkm lineage_wf --tab_table --extension fasta --file CHECKM.TSV FASTAS CHECKM.TEMP"
+    to get the result "CHECKM.TSV".
+-------------------------------------------------------------------------------------------
+2 - Amber\'s output [DIRECTORY].
+-------------------------------------------------------------------------------------------'''
     )
     parser.add_argument(
         '-o', '--output', type = str, required = False, metavar = 'prefix',
@@ -119,10 +129,21 @@ def read_checkm_file(input_file, contaminations):
     open_file = open(input_file, 'r')
     open_file.readline() # Remove header line. #
     # Bin Id	Marker lineage	# genomes	# markers	# marker sets	0	1	2	3	4	5+	Completeness	Contamination	Strain heterogeneity #
-    # Bin Id: sample.program.cluster #
+    # Bin Id: dataset.program.cluster #
     for line in open_file:
         lines = line.strip('\n').split('\t')
-        sample, program, _ = lines[0].split('.', maxsplit = 2)
+        try:
+            sample, program, _ = lines[0].split('.', maxsplit = 2)
+        except Exception:
+            print(
+                'The format of the first column must be "Dataset.Program.ClusterID".',
+                'You can name each cluster file as "Dataset.Program.ClusterID.fasta"',
+                'and put all files in the "FASTAS" folder, then run:',
+                '"checkm lineage_wf --tab_table --extension fasta --file CHECKM.TSV FASTAS CHECKM.TEMP"',
+                'to get the result "CHECKM.TSV".',
+                sep = '\n'
+            )
+            sys.exit()
         unique_programs[program] = 0
         benchmark = sample2program2benchmark.setdefault(sample, dict()).setdefault(program, numpy.zeros(shape = (len(contaminations), 10), dtype = numpy.int64))
         for index, contamination in enumerate(contaminations):
