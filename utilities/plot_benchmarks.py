@@ -24,7 +24,6 @@ class HCL:
         self.__gamma = 2.4
         self.__eps = 216.0 / 24389.0 # 0.008856452 #
         self.__kappa = 24389.0 / 27.0 # 903.2963 #
-        self.__dec2hex = '0123456789ABCDEF'
         self.__xyz2rgb_coefficient = ((3.2404542, -1.5371385, -0.4985314), (-0.9692660, 1.8760108, 0.0415560), (0.0556434, -0.2040259, 1.0572252))
         return None
 
@@ -34,11 +33,6 @@ class HCL:
         rgb = x * coefficient[0] + y * coefficient[1] + z * coefficient[2]
         rgb = 255.0 * (1.055 * pow(rgb, (1.0 / self.__gamma)) - 0.055 if rgb > 0.0031308 else 12.92 * rgb)
         return min(max(round(rgb), 0), 255)
-
-
-    def __output_colors(self, r, g, b):
-        color = '#' + self.__dec2hex[(r >> 4) & 15] + self.__dec2hex[r & 15] + self.__dec2hex[(g >> 4) & 15] + self.__dec2hex[g & 15] + self.__dec2hex[(b >> 4) & 15] + self.__dec2hex[b & 15]
-        return color
 
 
     def main(self, colors):
@@ -57,14 +51,14 @@ class HCL:
             A = 1.0 / 3.0 * (52.0 * self.__luminance / (self.__chroma * cos(hue) + 13.0 * self.__luminance * u) - 1.0)
             X = (Y * (39.0 * self.__luminance / (self.__chroma * sin(hue) + 13.0 * self.__luminance * v) - 5.0) - B) / (A + 1.0 / 3.0)
             Z = X * A + B
-            yield self.__output_colors(self.__xyz2rgb(X, Y, Z, 0), self.__xyz2rgb(X, Y, Z, 1), self.__xyz2rgb(X, Y, Z, 2))
+            yield (self.__xyz2rgb(X, Y, Z, 0) / 255.0, self.__xyz2rgb(X, Y, Z, 1) / 255.0, self.__xyz2rgb(X, Y, Z, 2) / 255.0)
         return self
 
 
 def __init__(parameters):
     parser = ArgumentParser(
         formatter_class = RawTextHelpFormatter,
-        description = 'Plot benchmarkss assessed by Amber or CheckM.\n\nPlot Amber:\npython3 {0} --input AMBER_OUTPUT|CHECKM_OUTPUT --output OUPUT'.format(sys.argv[0]),
+        description = 'Plot benchmarkss assessed by Amber or CheckM.\n\npython3 {0} -i AMBER_OUTPUT|CHECKM_OUTPUT [-o OUPUT]'.format(sys.argv[0]),
         epilog = 'Liucongcong congcong_liu@icloud.com.'
     )
     parser.add_argument(
@@ -72,7 +66,8 @@ def __init__(parameters):
         help = 'Compatible with 2 types of inputs:\n1. TSV formatted CheckM\'s output [FILE].\n2. Amber\'s output [DIRECTORY].'
     )
     parser.add_argument(
-        '-o', '--output', type = str, required = True, metavar = 'prefix'
+        '-o', '--output', type = str, required = False, metavar = 'prefix',
+        help = 'Prefix of output files.'
     )
     parser.add_argument(
         '-t', '--threshold', nargs = '+', default = [0.90, 0.95], type = float, required = False, metavar = 'float',
@@ -101,7 +96,7 @@ def read_amber_directory(amber, precisions):
     sample2program2benchmark = dict()
     genome = os.path.join(amber, 'genome')
     if os.access(genome, os.F_OK):
-        program2benchmark = sample2program2benchmark.setdefault('amber', dict())
+        program2benchmark = sample2program2benchmark.setdefault('Dataset', dict())
         for entry in os.scandir(genome):
             if entry.is_dir() and entry.name.lower() != 'gold standard':
                 metrics = os.path.join(entry.path, 'metrics_per_bin.tsv')
@@ -189,6 +184,8 @@ def plot(sample2program2benchmark, benchmark_index, x_label, program2color, outp
 
 if __name__ == '__main__':
     parameters = __init__(sys.argv[1 : ])
+    if not parameters.output:
+        parameters.output = parameters.input
     for threshold in parameters.threshold:
         assert threshold >= 0.0 and threshold <= 1.0, 'Each element of "--threshold" must be a float from 0.0 to 1.0.'
 
