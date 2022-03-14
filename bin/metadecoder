@@ -163,7 +163,7 @@ def __init__(parameters):
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.7'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.8'
     )
     return parser.parse_args(parameters)
 

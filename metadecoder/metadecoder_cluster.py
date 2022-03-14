@@ -181,13 +181,17 @@ def read_mapping_file(input_file):
 
 
 def calculate_average_distance(x):
-    xx = numpy.sum(numpy.square(x), axis = 1, keepdims = True) # (samples, 1) #
-    distance_matrix = x @ x.T
-    distance_matrix *= -2.0
-    distance_matrix += xx
-    distance_matrix += xx.T
-    distance_matrix[distance_matrix < 0.0] = 0.0
-    return numpy.sum(numpy.sqrt(distance_matrix)) / (x.shape[0] * (x.shape[0] - 1) + numpy.finfo(numpy.float64).eps)
+    if x.shape[0] > 1:
+        xx = numpy.sum(numpy.square(x), axis = 1, keepdims = True) # (samples, 1) #
+        distance_matrix = x @ x.T
+        distance_matrix *= -2.0
+        distance_matrix += xx
+        distance_matrix += xx.T
+        distance_matrix[distance_matrix < 0.0] = 0.0
+        average_distance = numpy.sum(numpy.sqrt(distance_matrix)) / (x.shape[0] * (x.shape[0] - 1))
+    else:
+        average_distance = 0.0
+    return average_distance
 
 
 def run_models(process_queue, container, offset, kmer, kmer2index, kmers, sampling_length1, sampling_number1, sampling_length2, sampling_number2, weight, min_clustering_probability, outlier, random_number):

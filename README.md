@@ -159,6 +159,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 * 1.0.7 (20220206): Minor bugs fixed.
 
+* 1.0.8 (20220315): Minor bugs fixed.
+
 ## References
 
 * Mina Rho, Haixu Tang, and Yuzhen Ye. FragGeneScan: Predicting Genes in Short and Error-prone Reads. Nucl. Acids Res., 2010 doi: 10.1093/nar/gkq747.
