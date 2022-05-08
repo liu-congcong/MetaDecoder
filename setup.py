@@ -21,7 +21,7 @@ class set_permissions(install):
 def main():
     setup(
         name = 'metadecoder',
-        version = '1.0.8',
+        version = '1.0.9',
         url = 'https://github.com/liu-congcong/metadecoder/',
         author = 'Liucongcong',
         author_email = 'congcong_liu@icloud.com',

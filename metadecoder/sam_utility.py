@@ -87,7 +87,7 @@ def read_sam_file(input_sam, block_start, block_end, mapq = 0):
         if not line:
             break
         lines = line.rstrip(b'\n').split(b'\t')
-        if lines[2] != b'*' and (int(lines[4]) >= mapq):
+        if (~ int(lines[1]) & 4) and (int(lines[4]) >= mapq):
             #read id, reference sequence, position, cigar
             yield (lines[0].decode('ascii'), lines[2].decode('ascii'), int(lines[3]), lines[5].decode('ascii'))
         block_start += len(line)
