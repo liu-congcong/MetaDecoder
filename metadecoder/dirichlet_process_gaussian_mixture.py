@@ -38,7 +38,7 @@ class DPGMM:
     def __initialize_multinomial_fai(self):
         self.__multinomial_fai = numpy.zeros(shape = (self.__samples, self.__components), dtype = numpy.float64)
         kmeans = KMeans(n_clusters = min(self.__components, self.__samples), n_init = 2, random_state = self.__random_number)
-        kmeans_labels = kmeans.fit_predict((self.__x - self.__gaussian_prior_mu) / numpy.sqrt(numpy.diag(self.__wishart_prior_psi)))
+        kmeans_labels = kmeans.fit_predict((self.__x - self.__gaussian_prior_mu) / (numpy.sqrt(numpy.diag(self.__wishart_prior_psi)) + numpy.finfo(numpy.float64).eps))
         for label in range(self.__components):
             self.__multinomial_fai[kmeans_labels == label, label] = 1.0
 
@@ -179,7 +179,7 @@ class DPGMM:
                 # ψd(x) = ∑{i: 1 -> d} ψ((df - (i - 1)) / 2) #
                 + numpy.sum(digamma((self.__wishart_df - numpy.arange(self.__features).reshape(-1, 1)) / 2.), axis = 0)
                 # d * ln2 #
-                + self.__features * numpy.log(2.)
+                # + self.__features * numpy.log(2.)
                 # ln(|ψ|) #
                 - self.__wishart_psi_log_determinant
                 # d / kappa #

@@ -127,7 +127,7 @@ def __init__(parameters):
     )
     cluster_parser.add_argument(
         '--min_sequence_length', default = 2500, type = int, required = False, metavar = 'int',
-        help = 'Sequences with the length being greater than or equal to this value can be involved in the MetaDecoder algorithm.\nThe value should be a positive integer.\nDefault: 2500.'
+        help = 'Sequences with the length being greater than or equal to this value can be involved in the MetaDecoder algorithm.\nThe value should be a integer greater than 1000.\nDefault: 2500.'
     )
     cluster_parser.add_argument(
         '--outlier', default = 0.1, type = float, required = False, metavar = 'float',
@@ -163,7 +163,7 @@ def __init__(parameters):
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.9'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.10'
     )
     return parser.parse_args(parameters)
 
@@ -220,7 +220,7 @@ def parse_parameters(parameters):
         assert parameters.min_cluster_size > 0, 'The "min_cluster_size" should be a positive integer.'
         assert parameters.max_dpgmm_distance > 0, 'The "min_cluster_size" should be a positive float.'
         assert parameters.min_dpgmm_size > 0, 'The "min_dpgmm_size" should be a positive integer.'
-        assert parameters.min_sequence_length > 0, 'The "min_sequence_length" should be a positive integer.'
+        assert parameters.min_sequence_length >= 1000, 'The "min_sequence_length" should be a positive integer greater than 1000.'
         assert parameters.outlier >= 0.0 and parameters.outlier <= 0.5, 'The "outlier" should be from 0 to 0.5.'
         assert (parameters.sampling_length1[0] > 0) and (parameters.sampling_length1[0] <= parameters.sampling_length1[1]), 'The "sampling_length1" should be two positive integers (low and high) with 0 < low <= high.'
         assert parameters.sampling_number1 > 0, 'The "sampling_number1" should be a positive integer.'
