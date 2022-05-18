@@ -34,8 +34,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.0.10 #
-pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.10/metadecoder-1.0.10-py3-none-any.whl
+# Download and install MetaDecoder version 1.0.11 #
+pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.11/metadecoder-1.0.11-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -169,10 +169,10 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 * 1.0.10 (20220514): Minor bugs fixed.
 
+* 1.0.11 (20220518): Minor bugs fixed.
+
 ## References
 
 * Mina Rho, Haixu Tang, and Yuzhen Ye. FragGeneScan: Predicting Genes in Short and Error-prone Reads. Nucl. Acids Res., 2010 doi: 10.1093/nar/gkq747.
-
-* Hyatt, Doug & Chen, G.L. & Locascio, Phil & Land, Miriam & Larimer, F.W. & Hauser, Loren. (2010). Prodigal prokaryotic dynamic programming genefinding algorithm. BMC Bioinformatics. 11.
 
 * nhmmer: DNA Homology Search With Profile HMMs. T. J. Wheeler, S. R. Eddy. Bioinformatics, 29:2487-2489, 2013.

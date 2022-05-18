@@ -2,21 +2,22 @@ import os
 from datetime import datetime
 from math import inf
 
+import metadecoder
+
 from .fasta_utility import read_fasta_file
 from .make_file import make_file
-from .run_subprocess import get_program_information, run_fraggenescan, run_hmmsearch, run_prodigal
+from .run_subprocess import run_fraggenescan, run_hmmsearch
 
 
-def parse_sequence_id(file, trim):
+def parse_sequence_id(file):
     '''
     fraggenescan: >id_start_end_strand
-    prodigal: >id_index
     '''
     gene = 1
     output = os.path.basename(file) + '.proteins'
     open_file = open(output, 'w')
     for sequence_id, sequence in read_fasta_file(file):
-        open_file.write('>' + str(gene) + '_' + sequence_id.rsplit('_', maxsplit = trim)[0] + '\n')
+        open_file.write('>' + str(gene) + '_' + sequence_id.rsplit('_', maxsplit = 3)[0] + '\n')
         open_file.write(sequence + '\n')
         gene += 1
     open_file.close()
@@ -55,22 +56,24 @@ def get_seeds(file, model2tc, coverage, accuracy, output):
 def main(parameters):
     PROTEIN = make_file()
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Identifying protein sequences.', flush = True)
-    if b'fraggenescan' in get_program_information(parameters.protein_predictor).lower():
-        # FragGeneScan #
-        run_fraggenescan(parameters.protein_predictor, parameters.fasta, PROTEIN, parameters.threads)
-        protein = parse_sequence_id(PROTEIN, 3)
-    else:  # prodigal #
-        run_prodigal(parameters.protein_predictor, parameters.fasta, PROTEIN, parameters.threads)
-        protein = parse_sequence_id(PROTEIN, 1)
+    run_fraggenescan(
+        os.path.join(os.path.dirname(metadecoder.__file__), 'fraggenescan'),
+        parameters.fasta, PROTEIN, parameters.threads
+    )
+    protein = parse_sequence_id(PROTEIN)
     os.remove(PROTEIN)
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Done.', flush = True)
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Mapping marker genes to protein sequences.', flush = True)
     hmmsearch_output = make_file()
-    run_hmmsearch(parameters.hmmsearch, parameters.marker, protein, hmmsearch_output, parameters.threads)
+    run_hmmsearch(
+        os.path.join(os.path.dirname(metadecoder.__file__), 'hmmsearch'),
+        os.path.join(os.path.dirname(metadecoder.__file__), 'markers.hmm'),
+        protein, hmmsearch_output, parameters.threads
+    )
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Done.', flush = True)
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Writing to file.', flush = True)
     os.remove(protein)
-    model2tc = read_hmm_file(parameters.marker)
+    model2tc = read_hmm_file(os.path.join(os.path.dirname(metadecoder.__file__), 'markers.hmm'))
     get_seeds(hmmsearch_output, model2tc, parameters.coverage, parameters.accuracy, parameters.output)
     os.remove(hmmsearch_output)
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Finished.', flush = True)

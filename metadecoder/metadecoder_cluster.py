@@ -329,10 +329,10 @@ def main(parameters):
             parameters.min_dpgmm_size / dpgmm_unit, # size of the smallest cluster #
             numpy.concatenate((pca.fit_transform(kmer_frequency), coverage), axis = 1), # input data #
             length / dpgmm_unit, # data weights #
-            parameters.random_number # random seed used by multinomial fai initialization #
+            parameters.random_number
         )
         dpgmm.main()
-        dpgmm_predictions = numpy.argmax(dpgmm.multinomial_fai, axis = 1)
+        dpgmm_predictions = numpy.argmax(dpgmm.r, axis = 1)
         dump_dpgmm_prediction(os.path.basename(parameters.fasta) + '.' + str(parameters.min_sequence_length) + '.metadecoder.dpgmm', dpgmm_predictions)
     else:
         dpgmm_predictions = load_dpgmm_prediction(os.path.basename(parameters.fasta) + '.' + str(parameters.min_sequence_length) + '.metadecoder.dpgmm')

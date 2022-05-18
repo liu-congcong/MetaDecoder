@@ -3,7 +3,6 @@ import os
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 
-import metadecoder
 import numpy
 from metadecoder.detect_permission import is_readable, is_writeable
 from metadecoder import metadecoder_coverage
@@ -58,18 +57,6 @@ def __init__(parameters):
     seed_parser.add_argument(
         '--threads', default = 20, type = int, required = False, metavar = 'int',
         help = 'The number of threads.\nThe value should be a positive integer.\nDefault: 20.'
-    )
-    seed_parser.add_argument(
-        '--protein_predictor', default = '', type = str, required = False, metavar = 'str',
-        help = 'The path to the "FragGeneScan (e.g. FragGeneScan/FragGeneScan)" or "prodigal".\nDefault: internal FragGeneScan.'
-    )
-    seed_parser.add_argument(
-        '--hmmsearch', default = '', type = str, required = False, metavar = 'str',
-        help = 'The path to the "hmmsearch (e.g. hmmer/bin/hmmsearch)".\nDefault: internal hmmsearch.'
-    )
-    seed_parser.add_argument(
-        '--marker', default = 107, type = int, choices = (40, 107), required = False, metavar = 'int',
-        help = '107 single-copy marker genes conserved in bacteria or 40 in both bacteria and archaea.\nDefault: 107.'
     )
     seed_parser.add_argument(
         '--coverage', default = 0.5, type = float, required = False, metavar = 'float',
@@ -127,7 +114,7 @@ def __init__(parameters):
     )
     cluster_parser.add_argument(
         '--min_sequence_length', default = 2500, type = int, required = False, metavar = 'int',
-        help = 'Sequences with the length being greater than or equal to this value can be involved in the MetaDecoder algorithm.\nThe value should be a integer greater than 1000.\nDefault: 2500.'
+        help = 'Sequences with the length being greater than or equal to this value can be involved in the MetaDecoder algorithm.\nThe value should be a integer greater than 2000.\nDefault: 2500.'
     )
     cluster_parser.add_argument(
         '--outlier', default = 0.1, type = float, required = False, metavar = 'float',
@@ -163,7 +150,7 @@ def __init__(parameters):
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.10'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.11'
     )
     return parser.parse_args(parameters)
 
@@ -185,17 +172,6 @@ def parse_parameters(parameters):
         # all files are readable.
         parameters.fasta = os.path.abspath(parameters.fasta)
         is_readable(parameters.fasta)
-        parameters.marker = os.path.join(os.path.dirname(metadecoder.__file__), str(parameters.marker) + '.hmm')
-        is_readable(parameters.marker)
-        # all programs are readable and executable.
-        if not parameters.protein_predictor: # Use the internal program. #
-            parameters.protein_predictor = os.path.join(os.path.dirname(metadecoder.__file__), 'fraggenescan')
-        parameters.protein_predictor = os.path.abspath(parameters.protein_predictor)
-        is_readable(parameters.protein_predictor)
-        if not parameters.hmmsearch:
-            parameters.hmmsearch = os.path.join(os.path.dirname(metadecoder.__file__), 'hmmsearch')
-        parameters.hmmsearch = os.path.abspath(parameters.hmmsearch)
-        is_readable(parameters.hmmsearch)
         # the output file is writeable.
         is_writeable(parameters.output)
         parameters.output = os.path.abspath(parameters.output)
@@ -220,7 +196,7 @@ def parse_parameters(parameters):
         assert parameters.min_cluster_size > 0, 'The "min_cluster_size" should be a positive integer.'
         assert parameters.max_dpgmm_distance > 0, 'The "min_cluster_size" should be a positive float.'
         assert parameters.min_dpgmm_size > 0, 'The "min_dpgmm_size" should be a positive integer.'
-        assert parameters.min_sequence_length >= 1000, 'The "min_sequence_length" should be a positive integer greater than 1000.'
+        assert parameters.min_sequence_length >= 2000, 'The "min_sequence_length" should be a integer greater than or equal to 2000.'
         assert parameters.outlier >= 0.0 and parameters.outlier <= 0.5, 'The "outlier" should be from 0 to 0.5.'
         assert (parameters.sampling_length1[0] > 0) and (parameters.sampling_length1[0] <= parameters.sampling_length1[1]), 'The "sampling_length1" should be two positive integers (low and high) with 0 < low <= high.'
         assert parameters.sampling_number1 > 0, 'The "sampling_number1" should be a positive integer.'

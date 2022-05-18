@@ -21,7 +21,7 @@ class set_permissions(install):
 def main():
     setup(
         name = 'metadecoder',
-        version = '1.0.10',
+        version = '1.0.11',
         url = 'https://github.com/liu-congcong/metadecoder/',
         author = 'Liucongcong',
         author_email = 'congcong_liu@icloud.com',
@@ -38,7 +38,7 @@ def main():
         ],
         packages = find_packages(),
         package_data = {
-            '': ['LICENSE', '40.hmm', '107.hmm', 'fraggenescan', 'hmmsearch', 'train/*'],
+            '': ['LICENSE', 'markers.hmm', 'fraggenescan', 'hmmsearch', 'train/*'],
         },
         cmdclass = {
             'install': set_permissions
