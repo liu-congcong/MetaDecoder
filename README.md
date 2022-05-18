@@ -19,7 +19,7 @@ Benchmarks for all datasets are available in **benchmarks** directory.
 * [scipy (version 1.5.4)](https://pypi.org/project/scipy/)
 * [scikit-learn (version 0.23.2)](https://pypi.org/project/scikit-learn/)
 * [threadpoolctl](https://pypi.org/project/threadpoolctl/)
-* [fraggenescan (version 1.31)](https://sourceforge.net/projects/fraggenescan/) | [prodigal (version 2.6.3)](https://github.com/hyattpd/Prodigal/)
+* [fraggenescan (version 1.31)](https://sourceforge.net/projects/fraggenescan/)
 * [hmmer (version 3.2.1)](http://www.hmmer.org/)
 
 ## Installation
@@ -49,7 +49,7 @@ Make sure you have a good internet connection, as MetaDecoder will install the r
 pip3 install numpy==1.18.5 scipy==1.5.4 scikit-learn==0.23.2 threadpoolctl
 ```
 
-MetaDecoder uses **FragGeneScan** or **Prodigal** and **Hmmer** for predicting protein coding genes and mapping single-copy marker genes to contigs, respectively.
+MetaDecoder uses **FragGeneScan** and **Hmmer** for predicting protein coding genes and mapping single-copy marker genes to contigs, respectively.
 
 MetaDecoder has included the compiled FragGeneScan (version 1.31) and Hmmer (version 3.2.1).
 
