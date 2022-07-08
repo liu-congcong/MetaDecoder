@@ -93,7 +93,7 @@ def select_seed(sequences, seeds_list, clusters, SEQUENCES, coverage, kmer_frequ
         scores_mask = numpy.flatnonzero(numpy.sum(scores, axis = 0))
         if scores_mask.shape[0] > clusters:
             scores = scores[scores_mask][ : , scores_mask]
-            scores += numpy.finfo(numpy.float64).eps
+            scores += 1e-6
             spectral_clustering = SpectralClustering(n_clusters = clusters, random_state = random_number, affinity = 'precomputed')
             spectral_predictions = spectral_clustering.fit_predict(scores)
             for spectral_prediction in range(clusters):

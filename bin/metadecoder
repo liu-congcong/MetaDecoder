@@ -33,8 +33,8 @@ def __init__(parameters):
         help = 'The size (bp) of each bin.\nThe value should be a positive integer.\nDefault: 2000.'
     )
     coverage_parser.add_argument(
-        '--mapq', default = 20, type = int, required = False, metavar = 'int',
-        help = 'The MAPQ threshold.\nThe value should be a non-negative integer.\nDefault: 20.'
+        '--mapq', default = 0, type = int, required = False, metavar = 'int',
+        help = 'The MAPQ threshold.\nThe value should be a non-negative integer.\nDefault: 0.'
     )
     coverage_parser.add_argument(
         '--aligned', default = 0.95, type = float, required = False, metavar = 'float',
@@ -150,7 +150,7 @@ def __init__(parameters):
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.0.11'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.0.12'
     )
     return parser.parse_args(parameters)
 
