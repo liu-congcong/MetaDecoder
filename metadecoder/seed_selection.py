@@ -94,8 +94,12 @@ def select_seed(sequences, seeds_list, clusters, SEQUENCES, coverage, kmer_frequ
         if scores_mask.shape[0] > clusters:
             scores = scores[scores_mask][ : , scores_mask]
             scores += 1e-6
-            spectral_clustering = SpectralClustering(n_clusters = clusters, random_state = random_number, affinity = 'precomputed')
-            spectral_predictions = spectral_clustering.fit_predict(scores)
-            for spectral_prediction in range(clusters):
-                seeds.append(''.join(SEQUENCES[seed_mappings[sequence_index]] for sequence_index in scores_mask[spectral_predictions == spectral_prediction]))
+            # Spectral clustering may fail due to an extremely rare vulnerability. #
+            try:
+                spectral_clustering = SpectralClustering(n_clusters = clusters, random_state = random_number, affinity = 'precomputed')
+                spectral_predictions = spectral_clustering.fit_predict(scores)
+                for spectral_prediction in range(clusters):
+                    seeds.append(''.join(SEQUENCES[seed_mappings[sequence_index]] for sequence_index in scores_mask[spectral_predictions == spectral_prediction]))
+            except:
+                pass
     return seeds
