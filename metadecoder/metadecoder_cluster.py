@@ -33,7 +33,7 @@ def read_coverage_file(file, sequence_id2sequence, sequences):
         bin_coverage_ = sequence2bin_coverage.get(sequence, [[1e-5 for coverage_ in range(coverages)]])
         if len(bin_coverage_) > 1:
             del bin_coverage_[-1]
-        bin_coverage.append(numpy.log(bin_coverage_, dtype = numpy.float64))
+        bin_coverage.append(numpy.array(bin_coverage_, dtype = numpy.float64))
         coverage[sequence] = numpy.mean(bin_coverage[sequence], axis = 0)
     return (coverage, bin_coverage)
 
