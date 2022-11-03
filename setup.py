@@ -21,16 +21,16 @@ class set_permissions(install):
 def main():
     setup(
         name = 'metadecoder',
-        version = '1.0.14',
+        version = '1.0.15',
         url = 'https://github.com/liu-congcong/metadecoder/',
         author = 'Liucongcong',
         author_email = 'congcong_liu@icloud.com',
         license = 'GPLv3',
         description = 'An algorithm for clustering metagenomic sequences.',
         install_requires = [
-            'numpy == 1.18.5',
-            'scipy == 1.5.4',
-            'scikit-learn == 0.23.2',
+            'numpy',
+            'scipy',
+            'scikit-learn',
             'threadpoolctl'
         ],
         scripts = [

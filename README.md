@@ -34,19 +34,19 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.0.14 #
-pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.14/metadecoder-1.0.14-py3-none-any.whl
+# Download and install MetaDecoder version 1.0.15 #
+pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.15/metadecoder-1.0.15-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
 
-* **numpy (version 1.18.5)**
-* **scipy (version 1.5.4)**
-* **scikit-learn (version 0.23.2)**
+* **numpy**
+* **scipy**
+* **scikit-learn**
 * **threadpoolctl**
 
 ```shell
-pip3 install numpy==1.18.5 scipy==1.5.4 scikit-learn==0.23.2 threadpoolctl
+pip3 install numpy scipy scikit-learn threadpoolctl
 ```
 
 MetaDecoder uses **FragGeneScan** and **Hmmer** for predicting protein coding genes and mapping single-copy marker genes to contigs, respectively.
@@ -176,6 +176,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 * 1.0.13 (20220712): Minor bugs fixed.
 
 * 1.0.14 (20220914): Minor bugs fixed.
+
+* 1.0.15 (20221103): Minor bugs fixed.
 
 ## References
 

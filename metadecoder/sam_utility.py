@@ -2,41 +2,24 @@ import os
 from math import ceil
 
 
-def read_sequence_header(input_sam):
-    '''
-    Parameters:
-        input_sam: the input sam file (with @SQ headers).
-    Return:
-        a generator of @SQ line.
-    '''
-    open4r = open(input_sam, 'r')
-    for line in open4r:
-        line = line.rstrip('\n')
+def read_sam_header(input_sam):
+    sorted_sam = False
+    open_file = open(input_sam, 'r')
+    for line in open_file:
         if line.startswith('@'):
             if line.startswith('@SQ'):
-                yield line
-        else: # consume all headers #
+                for tag_value in line.rstrip('\n').split('\t'):
+                    if tag_value.startswith('SN'):
+                        sequence_id = tag_value[3 : ]
+                    elif tag_value.startswith('LN'):
+                        sequence_length = int(tag_value[3 : ])
+                yield (sequence_id, sequence_length)
+            elif line.startswith('@HD') and ('SO:coordinate' in line):
+                sorted_sam = True
+        else:
             break
-    open4r.close()
-    return None
-
-
-def get_sequence_information(input_sam):
-    '''
-    Extract the information of all sequences from a sam file.
-    Parameters:
-        input_sam: the input sam file (with @SQ headers).
-    Return:
-        a generator of (sequence_id, sequence_length)
-    '''
-    for line in read_sequence_header(input_sam):
-        lines = line.rstrip('\n').split('\t')
-        for tag_value in lines:
-            if tag_value.startswith('SN'):
-                sequence_id = tag_value[3:]
-            elif tag_value.startswith('LN'):
-                sequence_length = int(tag_value[3:])
-        yield (sequence_id, sequence_length)
+    open_file.close()
+    # assert sorted_sam, f"The sam file \"{input_sam}\" must be sorted by coordinate." #
     return None
 
 

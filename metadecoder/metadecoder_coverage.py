@@ -6,7 +6,7 @@ from re import compile
 
 import numpy
 from .make_file import make_file
-from .sam_utility import generate_block, get_sequence_information, read_sam_file
+from .sam_utility import generate_block, read_sam_file, read_sam_header
 
 
 def get_coverage(input_file, block_start, block_end, output_file, bin_size, mapq, aligned_threshold):
@@ -49,6 +49,16 @@ def get_coverage(input_file, block_start, block_end, output_file, bin_size, mapq
 
 
 def main(parameters):
+
+    sam_files = len(parameters.sam)
+    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Reading header sections from all sam files.', flush = True)
+    sequence_struct = dict()
+    for sam_file in parameters.sam:
+        for sequence, sequence_length in read_sam_header(sam_file):
+            sequence_struct[(sequence, sequence_length)] = sequence_struct.get((sequence, sequence_length), 0) + 1
+    for (sequence, sequence_length), pairs in sequence_struct.items():
+        assert pairs == sam_files, f"All sam files should have the same header, but sequence \"{sequence}\" is not present in all files."
+
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Loading sam files.', flush = True)
     file2temp_files = dict()
     process_pool = Pool(os.cpu_count())
@@ -71,12 +81,12 @@ def main(parameters):
     process_pool.close()
     process_pool.join()
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Done.', flush = True)
+
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '->', 'Writing to file.', flush = True)
-    features = len(parameters.sam)
     sequence2bin_coverages = dict()
     sequence2bin_sizes = dict()
-    for sequence, sequence_length in get_sequence_information(parameters.sam[0]):
-        sequence2bin_coverages[sequence] = numpy.zeros(shape = (ceil(sequence_length / parameters.bin_size), features), dtype = numpy.int64)
+    for sequence, sequence_length in sequence_struct:
+        sequence2bin_coverages[sequence] = numpy.zeros(shape = (ceil(sequence_length / parameters.bin_size), sam_files), dtype = numpy.int64)
         sequence2bin_sizes[sequence] = numpy.array(
             [
                 min(parameters.bin_size * (bin_index + 1), sequence_length) - parameters.bin_size * bin_index for bin_index in range(ceil(sequence_length / parameters.bin_size))
@@ -92,7 +102,7 @@ def main(parameters):
             open_file.close()
             os.remove(temp_file)
     open_file = open(parameters.output, 'w')
-    open_file.write('\t'.join(['sequence id', 'bin index', 'bin size'] + ['coverage' + str(coverage_index + 1) for coverage_index in range(features)]) + '\n')
+    open_file.write('\t'.join(['sequence id', 'bin index', 'bin size'] + ['coverage' + str(coverage_index + 1) for coverage_index in range(sam_files)]) + '\n')
     for sequence, BinCoverages in sequence2bin_coverages.items():
         for bin_index, (bin_size, bin_coverage) in enumerate(zip(sequence2bin_sizes[sequence], BinCoverages), start = 1):
             open_file.write('\t'.join([sequence, str(bin_index), str(bin_size)] + (bin_coverage / bin_size).astype(numpy.str_).tolist()) + '\n')
