@@ -14,10 +14,10 @@ Benchmarks for all datasets are available in **benchmarks** directory.
 
 ## Dependencies
 
-* [python (version 3.8.6 or >= 3.8)](https://www.python.org/)
-* [numpy (version 1.18.5)](https://pypi.org/project/numpy/)
-* [scipy (version 1.5.4)](https://pypi.org/project/scipy/)
-* [scikit-learn (version 0.23.2)](https://pypi.org/project/scikit-learn/)
+* [python (version >= 3.8)](https://www.python.org/)
+* [numpy](https://pypi.org/project/numpy/)
+* [scipy](https://pypi.org/project/scipy/)
+* [scikit-learn](https://pypi.org/project/scikit-learn/)
 * [threadpoolctl](https://pypi.org/project/threadpoolctl/)
 * [fraggenescan (version 1.31)](https://sourceforge.net/projects/fraggenescan/)
 * [hmmer (version 3.2.1)](http://www.hmmer.org/)
