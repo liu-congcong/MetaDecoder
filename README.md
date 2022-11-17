@@ -34,8 +34,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.0.15 #
-pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.15/metadecoder-1.0.15-py3-none-any.whl
+# Download and install MetaDecoder version 1.0.16 #
+pip3 install https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.16/metadecoder-1.0.16-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -178,6 +178,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 * 1.0.14 (20220914): Minor bugs fixed.
 
 * 1.0.15 (20221103): Minor bugs fixed.
+
+* 1.0.16 (20221117): Minor bugs fixed.
 
 ## References
 

@@ -32,24 +32,25 @@ def generate_block(input_sam, blocks):
     Return:
         a generator of start and end positions of a block of a sam file.
     '''
-    open4r = open(input_sam, 'rb')
-    while True:
-        line = open4r.readline()
-        if line:
-            if not line.startswith(b'@'):
-                block_start = open4r.tell()-len(line)
-                break
-        else: # EOF #
-            break
+
     file_size = os.path.getsize(input_sam)
+    block_start = 0
+
+    open_file = open(input_sam, 'rb')
+    for line in open_file:
+        if not line.startswith(b'@'):
+            block_start = open_file.tell() - len(line)
+            break
+    # block_start has been defined #
+
     block_size = ceil((file_size - block_start) / blocks)
     while block_start < file_size:
-        open4r.seek(block_size, 1)
-        open4r.readline()
-        block_end = open4r.tell()
+        open_file.seek(block_size, 1)
+        open_file.readline()
+        block_end = open_file.tell()
         yield(block_start, min(block_end, file_size))
         block_start = block_end
-    open4r.close()
+    open_file.close()
     return None
 
 
@@ -63,16 +64,16 @@ def read_sam_file(input_sam, block_start, block_end, mapq = 0):
     Return:
         (read_id, ref_id, pos, cigar)
     '''
-    open4r = open(input_sam, 'rb')
-    open4r.seek(block_start, 0)
-    while block_start < block_end:
-        line = open4r.readline()
-        if not line:
-            break
+
+    open_file = open(input_sam, 'rb')
+    open_file.seek(block_start, 0)
+    for line in open_file:
         lines = line.rstrip(b'\n').split(b'\t')
         if (~ int(lines[1]) & 4) and (int(lines[4]) >= mapq):
-            #read id, reference sequence, position, cigar
+            # read id, reference sequence, position, cigar #
             yield (lines[0].decode('ascii'), lines[2].decode('ascii'), int(lines[3]), lines[5].decode('ascii'))
         block_start += len(line)
-    open4r.close()
+        if block_start >= block_end:
+            break
+    open_file.close()
     return None
