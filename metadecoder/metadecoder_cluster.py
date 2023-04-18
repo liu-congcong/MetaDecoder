@@ -24,13 +24,20 @@ def read_coverage_file(file, sequence_id2sequence, sequences):
     for line in open_file:
         lines = line.rstrip('\n').split('\t')
         if lines[0] in sequence_id2sequence:
-            sequence2bin_coverage.setdefault(sequence_id2sequence[lines[0]], list()).append([float(coverage_) + 1 / float(lines[2]) for coverage_ in lines[3:]])
+            sequence2bin_coverage.setdefault(sequence_id2sequence[lines[0]], list()).append(
+                (int(lines[1]), [float(coverage_) + 1 / float(lines[2]) for coverage_ in lines[3 : ]])
+            )
     open_file.close()
 
     bin_coverage = list()
     coverage = numpy.empty(shape = (sequences, coverages), dtype = numpy.float64)
     for sequence in range(sequences):
-        bin_coverage_ = sequence2bin_coverage.get(sequence, [[1e-5 for coverage_ in range(coverages)]])
+        if sequence in sequence2bin_coverage:
+            bin_coverage_ = sequence2bin_coverage[sequence]
+            bin_coverage_.sort()
+            bin_coverage_ = [i[1] for i in bin_coverage_]
+        else:
+            bin_coverage_ = [[1e-5 for coverage_ in range(coverages)]]
         if len(bin_coverage_) > 1:
             del bin_coverage_[-1]
         bin_coverage.append(numpy.array(bin_coverage_, dtype = numpy.float64))
