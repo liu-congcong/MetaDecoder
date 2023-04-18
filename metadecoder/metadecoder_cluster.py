@@ -16,26 +16,31 @@ from .kmer_frequency_model import generate_kmer_frequency, kmer_to_index, run_sv
 from .seed_selection import generate_seed, select_seed
 
 
-def read_coverage_file(file, sequence_id2sequence, sequences):
-    sequence2bin_coverage = dict()
-    open_file = open(file, 'r')
-    # header: sequence_id BinIndex BinSize Coverage1 Coverage2 ... #
-    coverages = len(open_file.readline().rstrip('\n').split('\t')) - 3
-    for line in open_file:
-        lines = line.rstrip('\n').split('\t')
-        if lines[0] in sequence_id2sequence:
-            sequence2bin_coverage.setdefault(sequence_id2sequence[lines[0]], list()).append(
-                (int(lines[1]), [float(coverage_) + 1 / float(lines[2]) for coverage_ in lines[3 : ]])
-            )
-    open_file.close()
+def read_coverage_file(files, sequence_id2sequence, sequences):
+    sequence2bin2coverage = dict()
+    coverages = 0
+    for file in files:
+        open_file = open(file, 'r')
+        # header: sequence_id BinIndex BinSize Coverage1 Coverage2 ... #
+        coverages += open_file.readline().count('\t') - 2
+        for line in open_file:
+            lines = line.rstrip('\n').split('\t')
+            if lines[0] in sequence_id2sequence:
+                sequence2bin2coverage.setdefault(
+                    sequence_id2sequence[lines[0]], dict()
+                ).setdefault(
+                    int(lines[1]), list()
+                ).extend(
+                    [float(coverage_) + 1 / float(lines[2]) for coverage_ in lines[3 : ]]
+                )
+        open_file.close()
 
     bin_coverage = list()
     coverage = numpy.empty(shape = (sequences, coverages), dtype = numpy.float64)
     for sequence in range(sequences):
-        if sequence in sequence2bin_coverage:
-            bin_coverage_ = sequence2bin_coverage[sequence]
-            bin_coverage_.sort()
-            bin_coverage_ = [i[1] for i in bin_coverage_]
+        if sequence in sequence2bin2coverage:
+            bin2coverage = sequence2bin2coverage[sequence]
+            bin_coverage_ = [bin2coverage[binIndex] for binIndex in sorted(bin2coverage.keys())]
         else:
             bin_coverage_ = [[1e-5 for coverage_ in range(coverages)]]
         if len(bin_coverage_) > 1:
