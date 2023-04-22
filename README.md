@@ -115,7 +115,14 @@ chmod 755 /Library/Frameworks/Python.framework/Versions/3.*/lib/python3.*/site-p
 
 * A FASTA formatted assembly file: **ASSEMBLY.FASTA**
 
-* Some SAM formatted read files with the same headers: **SAMPLE1.SAM**, **SAMPLE2.SAM** ...
+* Some SAM formatted read files with the **SAME HEADER**: **SAMPLE1.SAM**, **SAMPLE2.SAM** ...
+
+```shell
+for file in *.bam
+do
+samtools view -h -o ${file}.sam ${file}
+done
+```
 
 ### Run MetaDecoder
 
