@@ -129,6 +129,16 @@ Output: **METADECODER.COVERAGE**
 metadecoder coverage -s SAMPLE1.SAM SAMPLE2.SAM ... -o METADECODER.COVERAGE
 ```
 
+Since v1.0.17, MetaDecoder supports calculating coverage for each sample, which can reduce the storage space for multiple sequencing samples.
+
+```shell
+for file in *.bam
+do
+samtools view -h -o ${file}.sam ${file}
+metadecoder coverage -s ${file}.sam -o ${file}.METADECODER.COVERAGE
+rm ${file}.sam
+```
+
 #### Map single-copy marker genes to the assembly
 
 Input: **ASSEMBLY.FASTA**
@@ -147,6 +157,12 @@ Output: **METADECODER.1.FASTA**, **METADECODER.2.FASTA**, ...
 
 ```shell
 metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEED -o METADECODER
+```
+
+Since v1.0.17, MetaDecoder can load multiple coverage files for clustering.
+
+```shell
+metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.SEED -o METADECODER
 ```
 
 ### A simple example to use MetaDecoder is available in MetaDecoder/example/
@@ -181,7 +197,7 @@ metadecoder cluster -f ASSEMBLY.FASTA -c METADECODER.COVERAGE -s METADECODER.SEE
 
 * 1.0.16 (20221117): Minor bugs fixed.
 
-* 1.0.17 (20230418): Minor bugs fixed.
+* 1.0.17 (20230418): Multiple coverage files for clustering
 
 ## References
 
