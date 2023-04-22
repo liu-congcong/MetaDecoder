@@ -137,6 +137,7 @@ do
 samtools view -h -o ${file}.sam ${file}
 metadecoder coverage -s ${file}.sam -o ${file}.METADECODER.COVERAGE
 rm ${file}.sam
+done
 ```
 
 #### Map single-copy marker genes to the assembly
