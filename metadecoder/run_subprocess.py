@@ -1,3 +1,4 @@
+import gzip
 import os
 from multiprocessing import Pool
 from shutil import move, rmtree
@@ -23,10 +24,26 @@ def run_fraggenescan(fraggenescan, input_fasta, output_fasta, threads):
     '''
     Run FragGeneScan to predict all protein sequences.
     '''
+    open_file = open(input_fasta, 'rb')
+    magic_code = open_file.read(2)
+    open_file.close()
+    if magic_code == b'\x1f\x8b':
+        flag = True
+        open4r = gzip.open(input_fasta, mode = 'r')
+        input_fasta = make_file()
+        open4w = open(input_fasta, 'wb')
+        while open4w.write(open4r.read(1048576)):
+            pass
+        open4w.close()
+        open4r.close()
+    else:
+        flag = False
     worker(
         [fraggenescan, '-s', input_fasta, '-o', output_fasta, '-w', '0', '-t', 'complete', '-p', str(threads)],
         'An error has occured while running fraggenescan.'
     )
+    if flag:
+        os.remove(input_fasta)
     os.remove(output_fasta + '.ffn')
     os.remove(output_fasta + '.out')
     os.replace(output_fasta + '.faa', output_fasta)
