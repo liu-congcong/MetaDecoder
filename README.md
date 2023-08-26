@@ -6,6 +6,10 @@ Cite [MetaDecoder](https://microbiomejournal.biomedcentral.com/articles/10.1186/
 
 Liu, CC., Dong, SS., Chen, JB. et al. MetaDecoder: a novel method for clustering metagenomic contigs. Microbiome 10, 46 (2022). [https://doi.org/10.1186/s40168-022-01237-8](https://doi.org/10.1186/s40168-022-01237-8)
 
+Please note that MetaDecoder will not be updated to optimize performance, only bug fixes. An updated version of MetaDecoder is already in development, which will bring more accurate clustering results and lower GPU resource requirements.
+
+2023年，青基评委给我不予资助的最终意见，理由是所谓的没有创新性。我不确定MetaDecoder2能否最终上线，因为仍有许多与科研无关的事情在消磨我的精力。请对青年科研工作者一些宽容，加油吧，最后感谢基金委。 - 20230827
+
 ## Benchmarks
 
 All datasets mentioned in text and some NEWLY ADDED datasets are available in **[Google Drive](https://drive.google.com/drive/folders/1_mybcewf3VE-7dte6oA-vDmlRx2ugzyD?usp=sharing)**.
