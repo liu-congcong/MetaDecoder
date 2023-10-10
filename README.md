@@ -1,4 +1,4 @@
-# MetaDecoder !!! MetaDecoder v1.0.18 has a serious bug, I will fix it as soon as possible!
+# MetaDecoder
 
 An algorithm for clustering metagenomic sequences.
 
