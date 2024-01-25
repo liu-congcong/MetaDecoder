@@ -213,7 +213,7 @@ metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.S
 
 * 1.0.18 (20230816): Support gz formatted assemblies.
 
-* 1.0.19 (20230816): Clusters will not participate in the calculation of the average of kmer distance if it contains more than 50,000 sequences.
+* 1.0.19 (20240125): Clusters will not participate in the calculation of the average of kmer distance if it contains more than 50,000 sequences.
 
 ## References
 
