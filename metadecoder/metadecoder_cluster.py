@@ -352,7 +352,7 @@ def main(parameters):
 
     for dpgmm_prediction in numpy.unique(dpgmm_predictions):
         sequences_ = numpy.flatnonzero(dpgmm_predictions == dpgmm_prediction)
-        if calculate_average_distance(kmer_frequency[sequences_]) <= parameters.max_dpgmm_distance:
+        if sequences_.size >= 50000 or calculate_average_distance(kmer_frequency[sequences_]) <= parameters.max_dpgmm_distance:
             container_value = numpy.min(sequences_)
         else:
             container_value = -total_sequences - 1
