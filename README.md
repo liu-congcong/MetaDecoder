@@ -38,8 +38,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.0.19 #
-pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.0.19/metadecoder-1.0.19-py3-none-any.whl
+# Download and install MetaDecoder version 1.1.0 #
+pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.1.0/metadecoder-1.1.0-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -83,34 +83,6 @@ python3 -m cupyx.tools.install_library --cuda XXX --library cutensor
 echo 'export CUPY_ACCELERATORS="cutensor"' >> ~/.bashrc
 ```
 
-### Run MetaDecoder on MacOS (only for MacOS 11 now)
-
-We provided the compiled fraggenescan and hmmsearch for MacOS users.
-
-To run MetaDecoder on a Mac, please:
-
-* Install MetaDecoder.
-
-* Download and rename **fraggenescan (version 1.31 on MacOS)** and **hmmsearch (version 3.2.1 on MacOS)** to **fraggenescan** and **hmmsearch**, respectively.
-
-```shell
-mv "fraggenescan (version 1.31 on MacOS)" fraggenescan
-mv "hmmsearch (version 3.2.1 on MacOS)" hmmsearch
-```
-
-* Move them to the metadecoder folder.
-
-```shell
-mv fraggenescan hmmsearch /Library/Frameworks/Python.framework/Versions/3.*/lib/python3.*/site-packages/metadecoder/
-```
-
-* Assign appropriate permissions to the following files such as 755.
-
-```shell
-chmod 755 /Library/Frameworks/Python.framework/Versions/3.*/lib/python3.*/site-packages/metadecoder/fraggenescan
-chmod 755 /Library/Frameworks/Python.framework/Versions/3.*/lib/python3.*/site-packages/metadecoder/hmmsearch
-```
-
 ## Usage
 
 ### Preparations
@@ -119,35 +91,28 @@ chmod 755 /Library/Frameworks/Python.framework/Versions/3.*/lib/python3.*/site-p
 
 * A FASTA formatted assembly file: **ASSEMBLY.FASTA**
 
-* Some SAM formatted read files with the **SAME HEADER**: **SAMPLE1.SAM**, **SAMPLE2.SAM** ...
-
-```shell
-for file in *.bam
-do
-samtools view -h -o ${file}.sam ${file}
-done
-```
+* Some sorted BAM formatted read files with the **SAME HEADER**: **SAMPLE1.BAM**, **SAMPLE2.BAM** ...
 
 ### Run MetaDecoder
 
 #### Obtain the coverages of contigs
 
-Input: **SAMPLE1.SAM**, **SAMPLE2.SAM**, **...**
+Input: **SAMPLE1.BAM**, **SAMPLE2.BAM**, **...**
 
 Output: **METADECODER.COVERAGE**
 
 ```shell
-metadecoder coverage -s SAMPLE1.SAM SAMPLE2.SAM ... -o METADECODER.COVERAGE
+metadecoder coverage -b SAMPLE1.BAM SAMPLE2.BAM ... -o METADECODER.COVERAGE
 ```
 
 Since v1.0.17, MetaDecoder supports calculating coverage for each sample, which can reduce the storage space for multiple sequencing samples.
 
+Since v1.1.0, MetaDecoder can work with sorted BAM files and does not support SAM files.
+
 ```shell
 for file in *.bam
 do
-samtools view -h -o ${file}.sam ${file}
-metadecoder coverage -s ${file}.sam -o ${file}.METADECODER.COVERAGE
-rm ${file}.sam
+metadecoder coverage -s ${file}.bam -o ${file}.METADECODER.COVERAGE
 done
 ```
 
@@ -214,6 +179,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.S
 * 1.0.18 (20230816): Support gz formatted assemblies.
 
 * 1.0.19 (20240125): Clusters will not participate in the calculation of the average of kmer distance if it contains more than 50,000 sequences.
+
+* 1.1.0 (20241207): MetaDecoder has been updated to support sorted BAM files only, discontinuing support for SAM files [Thanks for @jolespin].
 
 ## References
 
