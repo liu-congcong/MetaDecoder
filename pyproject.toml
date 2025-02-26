@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "metadecoder"
-version = "1.1.0"
+version = "1.2.0"
 description = "An algorithm for clustering metagenomic sequences."
 requires-python = ">=3.9"
 license = {text = "GPLv3"}
@@ -26,9 +26,6 @@ include = ["metadecoder"]
 
 [tool.setuptools.package-data]
 metadecoder = ['LICENSE', 'markers.hmm', 'fraggenescan', 'hmmsearch', 'train/*']
-
-[tool.setuptools]
-cmdclass = {"install" = "metadecoder.set_permissions.set_permissions"}
 
 [project.scripts]
 metadecoder = "metadecoder:main"

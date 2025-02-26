@@ -2,10 +2,17 @@ import gzip
 import os
 from multiprocessing import Pool
 from shutil import move, rmtree
+from stat import S_IRWXU, S_IRGRP, S_IXGRP, S_IROTH, S_IXOTH
 from subprocess import DEVNULL, PIPE, STDOUT, run
 
 from .fasta_utility import split_fasta
 from .make_file import make_file
+
+
+def set_permissions(file):
+    if not os.access(file, os.R_OK | os.X_OK): # only for linux #
+        os.chmod(file, S_IRWXU + S_IRGRP + S_IXGRP + S_IROTH + S_IXOTH) # 0o755 #
+    return None
 
 
 def worker(command, message):
@@ -24,6 +31,7 @@ def run_fraggenescan(fraggenescan, input_fasta, output_fasta, threads):
     '''
     Run FragGeneScan to predict all protein sequences.
     '''
+    set_permissions(fraggenescan)
     open_file = open(input_fasta, 'rb')
     magic_code = open_file.read(2)
     open_file.close()
@@ -86,6 +94,7 @@ def run_hmmsearch(hmmsearch, input_hmm, input_fasta, output_file, threads):
     '''
     Run Hmmsearch to map hmms to sequences.
     '''
+    set_permissions(hmmsearch)
     input_fastas = list()
     output_files = list()
     process_pool = Pool(os.cpu_count())

@@ -182,6 +182,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.S
 
 * 1.1.0 (20241207): MetaDecoder has been updated to support sorted BAM files only, discontinuing support for SAM files [Thanks for @jolespin].
 
+* 1.2.0 (20250226): Fixed the output file of the seed subcommand being an empty file [Thanks for [@danieldavilaaleman](https://github.com/danieldavilaaleman) and [@MuhtashimRafiqChy](https://github.com/MuhtashimRafiqChy)].
+
 ## References
 
 * Mina Rho, Haixu Tang, and Yuzhen Ye. FragGeneScan: Predicting Genes in Short and Error-prone Reads. Nucl. Acids Res., 2010 doi: 10.1093/nar/gkq747.
