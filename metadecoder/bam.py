@@ -1,17 +1,39 @@
+import ctypes
 import os
-from ctypes import c_int64
 from gzip import GzipFile
 from hashlib import md5
-from math import ceil
 from multiprocessing import Process, Queue
 from multiprocessing.sharedctypes import RawArray, Value
 from struct import Struct
 
 import numpy
 
-from .bgzf import BGZF
+from .c import findCPath
 from .plot import plotBar
 
+
+class BGZF(ctypes.Structure):
+    _fields_ = [
+        ('filePointer', ctypes.c_void_p),
+        ('_1', ctypes.POINTER(ctypes.c_uint8)),
+        ('_2', ctypes.POINTER(ctypes.c_uint8)),
+        ('x', ctypes.POINTER(ctypes.c_uint8)),
+        ('_3', ctypes.c_uint64),
+        ('_4', ctypes.c_uint64),
+        ('fileOffset', ctypes.c_uint64),
+        ('_5', ctypes.c_uint64),
+        ('dataSize', ctypes.c_uint64),
+        ('dataOffset', ctypes.c_uint64),
+    ]
+
+BGZFpointer = ctypes.POINTER(BGZF)
+bgzf = ctypes.cdll.LoadLibrary(findCPath('bgzf'))
+bgzf.bgzfOpen.argtypes = [ctypes.c_char_p, ctypes.c_uint64]
+bgzf.bgzfOpen.restype = BGZFpointer
+bgzf.bgzfRead.argtypes = [BGZFpointer, ctypes.c_uint64]
+bgzf.bgzfRead.restype = ctypes.c_int
+bgzf.bgzfClose.argtypes = [BGZFpointer]
+bgzf.bgzfClose.restype = ctypes.c_int
 
 struct1B = Struct('<B') # uint8 #
 struct1c1i = Struct('<ci')
@@ -64,25 +86,32 @@ def readAlignment(file, fileOffset, dataOffset, dataSize):
 def readHeader(file):
     sequences = list()
     lengths = list()
-    isBGZFBam(file)
-    bgzf = BGZF(file)
-    bgzf.open()
-    assert bgzf.read(4) == b'BAM\1', f'\"{file}\" is not a valid bam file.'
-    headerLength = struct1i.unpack(bgzf.read(4))[0]
-    hdLine = bgzf.read(headerLength).split(b'\n', maxsplit = 1)[0]
+    bgzfPointer = bgzf.bgzfOpen(file.encode('utf-8'), 0)
+    bgzf.bgzfRead(bgzfPointer, 8)
+    x = ctypes.string_at(bgzfPointer.contents.x, 8)
+    assert x[ : 4] == b'BAM\1', f'\"{file}\" is not a valid bam file.'
+    headerLength = struct1i.unpack_from(x, 4)[0]
+    bgzf.bgzfRead(bgzfPointer, headerLength + 4)
+    x = ctypes.string_at(bgzfPointer.contents.x, headerLength + 4)
+    hdLine = x[ : -4].split(b'\n', maxsplit = 1)[0]
     assert b'SO:coordinate' in hdLine, f'\"{file}\" is not a sorted bam file.' # @ lines #
-    n = struct1i.unpack(bgzf.read(4))[0]
+    n = struct1i.unpack_from(x, headerLength)[0]
     assert n > 0, f'\"{file}\" contains no sequences.'
     marker = md5()
     for i in range(n): # all sequences and lengths #
-        sequence = bgzf.read(struct1i.unpack(bgzf.read(4))[0])[ : -1]
-        marker.update(sequence)
-        sequences.append(sequence)
-        length = bgzf.read(4)
-        marker.update(length)
-        lengths.append(length) # <i #
-    bgzf.close()
-    return (bgzf.fileOffset, bgzf.dataOffset, marker, sequences, lengths)
+        bgzf.bgzfRead(bgzfPointer, 4)
+        x = ctypes.string_at(bgzfPointer.contents.x, 4)
+        sequenceLength = struct1i.unpack(x)[0]
+        bgzf.bgzfRead(bgzfPointer, sequenceLength + 4)
+        x = ctypes.string_at(bgzfPointer.contents.x, sequenceLength + 4)
+        marker.update(x[ : sequenceLength - 1])
+        sequences.append(x[ : sequenceLength - 1])
+        marker.update(x[sequenceLength : ])
+        lengths.append(x[sequenceLength : ]) # <i #
+    fileOffset = bgzfPointer.contents.fileOffset
+    dataOffset = bgzfPointer.contents.dataOffset
+    bgzf.bgzfClose(bgzfPointer)
+    return (fileOffset, dataOffset, marker, sequences, lengths)
 
 
 def createIndex(marker, sequences, lengths, fileOffsets, dataOffsets, dataSizes, file):
@@ -122,15 +151,12 @@ def indexProcess(queue, n, N):
             fileOffset_ = headerFileOffset
             dataOffset = headerDataOffset
             dataOffset_ = headerDataOffset
-            bgzf = BGZF(file)
-            bgzf.open(fileOffset = headerFileOffset)
-            bgzf.read(headerDataOffset)
-            while True:
-                temp = bgzf.read(8)
-                if not temp:
-                    break
-                alignmentSize, reference = struct2i.unpack(temp) # reference: 0 ... n, -1 #
-                bgzf.read(alignmentSize - 4)
+            bgzfPointer = bgzf.bgzfOpen(file.encode('utf-8'), headerFileOffset)
+            bgzf.bgzfRead(bgzfPointer, headerDataOffset) # skip header #
+            while not bgzf.bgzfRead(bgzfPointer, 8):
+                x = ctypes.string_at(bgzfPointer.contents.x, 8)
+                alignmentSize, reference = struct2i.unpack(x) # reference: 0 ... n, -1 #
+                bgzf.bgzfRead(bgzfPointer, alignmentSize - 4)
                 if reference != reference_:
                     if reference_ >= -1:
                         fileOffsets[reference_] = fileOffset_
@@ -140,14 +166,14 @@ def indexProcess(queue, n, N):
                     fileOffset_ = fileOffset
                     dataOffset_ = dataOffset
                     dataSize = 0
-                fileOffset = bgzf.fileOffset
-                dataOffset = bgzf.dataOffset
+                fileOffset = bgzfPointer.contents.fileOffset
+                dataOffset = bgzfPointer.contents.dataOffset
                 dataSize += 4 + alignmentSize
             if reference_ >= -1:
                 fileOffsets[reference_] = fileOffset_
                 dataOffsets[reference_] = dataOffset_
                 dataSizes[reference_] = dataSize
-            bgzf.close()
+            bgzf.bgzfClose(bgzfPointer)
             createIndex(marker, sequences, lengths, fileOffsets, dataOffsets, dataSizes, f'{file}.index')
         n.acquire()
         n.value += 1
@@ -162,7 +188,7 @@ def indexBam(files, threads):
     threads: int
     '''
     N = len(files)
-    n = Value(c_int64, 0)
+    n = Value(ctypes.c_int64, 0)
     queue = Queue()
     processes = list()
     for i in range(threads):
@@ -221,7 +247,7 @@ def readIndices(files, threads):
     m = len(files)
     marker, sequences, lengths, fileOffsets, dataOffsets, dataSizes = readIndex(f'{files[0]}.index')
     n = len(sequences) - 1
-    X = RawArray(c_int64, 3 * n * m)
+    X = RawArray(ctypes.c_int64, 3 * n * m)
     x = numpy.ndarray(shape = (3, n, m), dtype = numpy.int64, buffer = X)
     x[0, : , 0] = fileOffsets[ : -1]
     x[1, : , 0] = dataOffsets[ : -1]

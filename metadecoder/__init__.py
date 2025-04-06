@@ -148,7 +148,7 @@ def __init__():
     )
 
     parser.add_argument(
-        '-v', '--version', action = 'version', version = '%(prog)s 1.2.0'
+        '-v', '--version', action = 'version', version = '%(prog)s 1.2.1'
     )
     return parser.parse_args()
 

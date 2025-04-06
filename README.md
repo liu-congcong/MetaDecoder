@@ -38,8 +38,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.2.0 #
-pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.2.0/metadecoder-1.2.0-py3-none-any.whl
+# Download and install MetaDecoder version 1.2.1 #
+pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.2.1/metadecoder-1.2.1-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -183,6 +183,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.S
 * 1.1.0 (20241207): MetaDecoder has been updated to support sorted BAM files only, discontinuing support for SAM files [Thanks for @jolespin].
 
 * 1.2.0 (20250226): Fixed the output file of the seed subcommand being an empty file [Thanks for [@danieldavilaaleman](https://github.com/danieldavilaaleman) and [@MuhtashimRafiqChy](https://github.com/MuhtashimRafiqChy)].
+
+* 1.2.1 (20250406): No bug fixed.
 
 ## References
 
