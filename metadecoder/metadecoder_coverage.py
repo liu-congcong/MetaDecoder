@@ -10,7 +10,7 @@ from threadpoolctl import threadpool_limits
 from .bam import getUngappedRegions, indexBam, readIndices
 from .plot import plotBar
 
-
+@threadpool_limits.wrap(limits = 1)
 def workerProcess(queue, files, mapq, identity, binSize, output, n, N):
     '''
     queue: queue
@@ -63,10 +63,9 @@ def createProcesses(files, n, mapq, identity, binSize, threads, output):
     N = Value(c_int64, 0)
     queue = Queue()
     processes = list()
-    with threadpool_limits(limits = 1):
-        for i in range(threads):
-            processes.append(Process(target = workerProcess, args = (queue, files, mapq, identity, binSize, output, n, N)))
-            processes[-1].start()
+    for i in range(threads):
+        processes.append(Process(target = workerProcess, args = (queue, files, mapq, identity, binSize, output, n, N)))
+        processes[-1].start()
     return (queue, processes, N)
 
 

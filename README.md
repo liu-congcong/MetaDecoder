@@ -6,9 +6,9 @@ Cite [MetaDecoder](https://microbiomejournal.biomedcentral.com/articles/10.1186/
 
 Liu, CC., Dong, SS., Chen, JB. et al. MetaDecoder: a novel method for clustering metagenomic contigs. Microbiome 10, 46 (2022). [https://doi.org/10.1186/s40168-022-01237-8](https://doi.org/10.1186/s40168-022-01237-8)
 
-Please note that MetaDecoder will not be updated to optimize performance, only bug fixes. An updated version of MetaDecoder is already in development, which will bring more accurate clustering results and lower GPU resource requirements.
+Please note that MetaDecoder will not be updated to optimize performance, only bug fixes.
 
-2023年，青基评委给我不予资助的最终意见，理由是所谓的没有创新性。我不确定MetaDecoder2能否最终上线，因为仍有许多与科研无关的事情在消磨我的精力。请对青年科研工作者一些宽容，加油吧，最后感谢基金委。 - 20230827
+An updated version of MetaDecoder is [MetaCAT](https://github.com/liu-congcong/MetaCAT), which will bring more accurate clustering results and lower GPU resource requirements.
 
 ## Benchmarks
 
@@ -38,8 +38,8 @@ python3 get-pip.py
 # You may need to install or upgrade setuptools and wheel using pip3 before. #
 pip3 install --upgrade setuptools wheel
 
-# Download and install MetaDecoder version 1.2.1 #
-pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.2.1/metadecoder-1.2.1-py3-none-any.whl
+# Download and install MetaDecoder version 1.2.2 #
+pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.2.2/metadecoder-1.2.2-py3-none-any.whl
 ```
 
 Make sure you have a good internet connection, as MetaDecoder will install the required Python dependencies, you can also install the dependencies manually:
@@ -185,6 +185,8 @@ metadecoder cluster -f ASSEMBLY.FASTA -c *.METADECODER.COVERAGE -s METADECODER.S
 * 1.2.0 (20250226): Fixed the output file of the seed subcommand being an empty file [Thanks for [@danieldavilaaleman](https://github.com/danieldavilaaleman) and [@MuhtashimRafiqChy](https://github.com/MuhtashimRafiqChy)].
 
 * 1.2.1 (20250406): No bug fixed.
+
+* 1.2.2 (20251212): Add "--threads" for `cluster` command. Thanks for [@Sam Nooij](https://github.com/samnooij).
 
 ## References
 
