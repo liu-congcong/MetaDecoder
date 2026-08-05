@@ -6,9 +6,13 @@ Cite [MetaDecoder](https://microbiomejournal.biomedcentral.com/articles/10.1186/
 
 Liu, CC., Dong, SS., Chen, JB. et al. MetaDecoder: a novel method for clustering metagenomic contigs. Microbiome 10, 46 (2022). [https://doi.org/10.1186/s40168-022-01237-8](https://doi.org/10.1186/s40168-022-01237-8)
 
-Please note that MetaDecoder will not be updated to optimize performance, only bug fixes.
+## Notes
 
-An updated version of MetaDecoder is [MetaCAT](https://github.com/liu-congcong/MetaCAT), which will bring more accurate clustering results and lower GPU resource requirements.
+Please note that MetaDecoder is no longer actively developed. Future updates will be limited to bug fixes only.
+
+I recommend using [**MetaCAT**](https://github.com/liu-congcong/MetaCAT), the successor to MetaDecoder. **MetaCAT** has been accepted for publication in *Nature Microbiology*.
+
+**MetaCAT** achieves improved clustering accuracy with reduced GPU memory requirements and includes further algorithmic and performance optimizations.
 
 ## Benchmarks
 
